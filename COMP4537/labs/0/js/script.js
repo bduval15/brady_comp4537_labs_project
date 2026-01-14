@@ -20,9 +20,9 @@ class MemoryButton
     constructor(id, color, container) 
     {
         this.id = id,
-            this.color = color,
-            this.container = container,
-            this.element = this.createButton();
+        this.color = color,
+        this.container = container,
+        this.element = this.createButton();
     }
 
     /**
