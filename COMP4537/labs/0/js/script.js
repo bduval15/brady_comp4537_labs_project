@@ -1,18 +1,36 @@
 /* COMP-4537 Lab 0
     Author: Braeden Duval
     Disclosure: I used Gemini 3 Flash to help structure the 
-    asynchronous scrambling logic and the Object-Oriented Class architecture.
+    asynchronous scrambling logic, the Object-Oriented Class architecture 
+    and the documentation.
 */
 
-class MemoryButton {
-    constructor(id, color, container) {
+/**
+ * Represents a single game button in the memory game.
+ * Handles its own creation, positioning, and label visibility.
+ */
+class MemoryButton 
+{
+
+    /**
+     * @param {number} id - The unique numerical identifier for the button.
+     * @param {string} color - The hex or CSS color string for the button background.
+     * @param {HTMLElement} container - The DOM element where the button will be appended.
+     */
+    constructor(id, color, container) 
+    {
         this.id = id,
             this.color = color,
             this.container = container,
             this.element = this.createButton();
     }
 
-    createButton() {
+    /**
+     * Creates the button element and applies initial styling.
+     * @returns {HTMLButtonElement} The created button element.
+     */
+    createButton() 
+    {
         const btn = document.createElement('button');
 
         btn.className = 'game-button';
@@ -27,7 +45,13 @@ class MemoryButton {
         return btn;
     }
 
-    updatePosition(maxW, maxH) {
+    /**
+     * Calculates and applies a random position within the container boundaries.
+     * @param {number} maxW - The maximum width of the container.
+     * @param {number} maxH - The maximum height of the container.
+     */
+    updatePosition(maxW, maxH) 
+    {
         // 1. Get current size 
         const btnWidth = this.element.offsetWidth;
         const btnHeight = this.element.offsetHeight;
@@ -45,24 +69,45 @@ class MemoryButton {
         this.element.style.top = `${randomY}px`;
     }
 
-    toggleLabel(show) {
+    /**
+     * Shows or hides the button's numerical label.
+     * @param {boolean} show - True to display the ID, false to clear it.
+     */
+    toggleLabel(show) 
+    {
         this.element.innerHTML = show ? this.id : "";
     }
 
-    destroy() {
+    /**
+     * Removes the button from the DOM.
+     */
+    destroy() 
+    {
         this.element.remove();
     }
 }
 
-class GameController {
-    constructor() {
+/**
+ * Manages the game state, including button collection, 
+ * scrambling logic, and win/loss validation.
+ */
+class GameController 
+{   
+
+    /** @type {MemoryButton[]} */
+    constructor() 
+    {
         this.buttons = [],
-            this.container = document.getElementById('button-container'),
-            this.clickCounter = 1;
+        this.container = document.getElementById('button-container'),
+        this.clickCounter = 1;
         this.isScrambling = false;
     }
 
-    scramble() {
+    /**
+     * Triggers a single relocation of all buttons within the container.
+     */
+    scramble() 
+    {
         const currentW = this.container.clientWidth;
         const currentH = this.container.clientHeight;
 
@@ -72,7 +117,11 @@ class GameController {
         });
     }
 
-    startTestingPhase() {
+    /**
+     * Prepares buttons for the testing phase by hiding labels and attaching click listeners.
+     */
+    startTestingPhase() 
+    {
         this.buttons.forEach(btn => {
             btn.toggleLabel(false);
             btn.element.onclick = () => {
@@ -81,7 +130,12 @@ class GameController {
         });
     }
 
-    checkLogic(btn) {
+    /**
+     * Validates if the clicked button matches the expected sequence.
+     * @param {MemoryButton} btn - The button that was clicked.
+     */
+    checkLogic(btn) 
+    {
         if (btn.id === this.clickCounter) {
             btn.toggleLabel(true);
 
@@ -97,29 +151,53 @@ class GameController {
         }
     }
 
-    revealAll() {
+    /**
+     * Displays all button numerical labels.
+     */
+    revealAll() 
+    {
         this.buttons.forEach(b => b.toggleLabel(true));
     }
 
-    lockButtons() {
+    /**
+     * Disables click events for all buttons.
+     */
+    lockButtons() 
+    {
         this.buttons.forEach(btn => btn.element.onclick = null);
     }
 
-    reset() {
+    /**
+     * Clears existing buttons and resets the game state.
+     */
+    reset() 
+    {
         this.buttons.forEach(btn => btn.destroy());
         this.buttons = [];
         this.clickCounter = 1;
     }
 
+    /**
+     * Helper to create a delay using Promises.
+     * @param {number} ms - Milliseconds to wait.
+     * @returns {Promise<void>}
+     */
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    async initGame(n) {
+    /**
+     * Initializes the game loop: creation, delay, scrambling, and testing.
+     * @param {number} n - The number of buttons to generate.
+     */
+    async initGame(n) 
+    {
         if (this.isScrambling) return;
         this.reset();
 
-        for (let i = 1; i <= n; i++) {
+        // 1. Creation Phase
+        for (let i = 1; i <= n; i++) 
+            {
             const color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
             const btn = new MemoryButton(i, color, this.container);
             btn.element.style.position = "relative";
@@ -128,11 +206,14 @@ class GameController {
 
         }
 
+        // Wait before scrambling
         await this.sleep(n * 1000);
 
-        this.isScrambling = true;
 
-        for (let i = 0; i < n; i++) {
+        // 2. Scrambling Phase
+        this.isScrambling = true;
+        for (let i = 0; i < n; i++) 
+            {
             const currentW = this.container.clientWidth;
             const currentH = this.container.clientHeight;
 
@@ -146,18 +227,33 @@ class GameController {
 
         this.isScrambling = false;
 
+        // 3. Testing Phase
         this.startTestingPhase();
     }
 
 }
 
-class UIManager {
-    constructor(gameEngine) {
+/**
+ * Manages the User Interface components like input fields and start buttons.
+ */
+class UIManager 
+{   
+
+    /**
+     * @param {GameController} gameEngine 
+     * The game controller instance to link to UI actions.
+     */
+    constructor(gameEngine) 
+    {
         this.gameEngine = gameEngine;
         this.setupUI();
     }
 
-    setupUI() {
+    /**
+     * Dynamically creates and injects UI elements into the page.
+     */
+    setupUI() 
+    {
         const root = document.getElementById('ui-container');
         const label = document.createElement('label');
 
@@ -185,5 +281,6 @@ class UIManager {
     }
 }
 
+// Entry Point
 const gameApp = new GameController();
 new UIManager(gameApp);
