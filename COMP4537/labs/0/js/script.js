@@ -1,36 +1,39 @@
-/* COMP-4537 Lab 0
-    Author: Braeden Duval
-    Disclosure: I used Gemini 3 Flash to help structure the 
-    asynchronous scrambling logic, the Object-Oriented Class architecture 
-    and the documentation.
-*/
+/** 
+ *  COMP-4537 Lab 0
+ * 
+ *  @author: Braeden Duval
+ *  @version: January 12, 2024
+ *  @description: A memory game where numbered buttons scramble on the screen 
+ *  and the player must click them in order.
+ * 
+ *  Disclosure: I used Gemini 3 Flash to help structure the 
+ *  asynchronous scrambling logic, the Object-Oriented Class architecture 
+ *  and the documentation.
+ */
 
 /**
  * Represents a single game button in the memory game.
  * Handles its own creation, positioning, and label visibility.
  */
-class MemoryButton 
-{
+class MemoryButton {
 
     /**
      * @param {number} id - The unique numerical identifier for the button.
      * @param {string} color - The hex or CSS color string for the button background.
      * @param {HTMLElement} container - The DOM element where the button will be appended.
      */
-    constructor(id, color, container) 
-    {
+    constructor(id, color, container) {
         this.id = id,
-        this.color = color,
-        this.container = container,
-        this.element = this.createButton();
+            this.color = color,
+            this.container = container,
+            this.element = this.createButton();
     }
 
     /**
      * Creates the button element and applies initial styling.
      * @returns {HTMLButtonElement} The created button element.
      */
-    createButton() 
-    {
+    createButton() {
         const btn = document.createElement('button');
 
         btn.className = 'game-button';
@@ -50,8 +53,7 @@ class MemoryButton
      * @param {number} maxW - The maximum width of the container.
      * @param {number} maxH - The maximum height of the container.
      */
-    updatePosition(maxW, maxH) 
-    {
+    updatePosition(maxW, maxH) {
         // 1. Get current size 
         const btnWidth = this.element.offsetWidth;
         const btnHeight = this.element.offsetHeight;
@@ -73,16 +75,14 @@ class MemoryButton
      * Shows or hides the button's numerical label.
      * @param {boolean} show - True to display the ID, false to clear it.
      */
-    toggleLabel(show) 
-    {
+    toggleLabel(show) {
         this.element.innerHTML = show ? this.id : "";
     }
 
     /**
      * Removes the button from the DOM.
      */
-    destroy() 
-    {
+    destroy() {
         this.element.remove();
     }
 }
@@ -91,23 +91,20 @@ class MemoryButton
  * Manages the game state, including button collection, 
  * scrambling logic, and win/loss validation.
  */
-class GameController 
-{   
+class GameController {
 
     /** @type {MemoryButton[]} */
-    constructor() 
-    {
+    constructor() {
         this.buttons = [],
-        this.container = document.getElementById('button-container'),
-        this.clickCounter = 1;
+            this.container = document.getElementById('button-container'),
+            this.clickCounter = 1;
         this.isScrambling = false;
     }
 
     /**
      * Triggers a single relocation of all buttons within the container.
      */
-    scramble() 
-    {
+    scramble() {
         const currentW = this.container.clientWidth;
         const currentH = this.container.clientHeight;
 
@@ -120,8 +117,7 @@ class GameController
     /**
      * Prepares buttons for the testing phase by hiding labels and attaching click listeners.
      */
-    startTestingPhase() 
-    {
+    startTestingPhase() {
         this.buttons.forEach(btn => {
             btn.toggleLabel(false);
             btn.element.onclick = () => {
@@ -134,8 +130,7 @@ class GameController
      * Validates if the clicked button matches the expected sequence.
      * @param {MemoryButton} btn - The button that was clicked.
      */
-    checkLogic(btn) 
-    {
+    checkLogic(btn) {
         if (btn.id === this.clickCounter) {
             btn.toggleLabel(true);
 
@@ -154,50 +149,46 @@ class GameController
     /**
      * Displays all button numerical labels.
      */
-    revealAll() 
-    {
+    revealAll() {
         this.buttons.forEach(b => b.toggleLabel(true));
     }
 
     /**
      * Disables click events for all buttons.
      */
-    lockButtons() 
-    {
+    lockButtons() {
         this.buttons.forEach(btn => btn.element.onclick = null);
     }
 
     /**
      * Clears existing buttons and resets the game state.
      */
-    reset() 
-    {
+    reset() {
         this.buttons.forEach(btn => btn.destroy());
         this.buttons = [];
         this.clickCounter = 1;
     }
 
     /**
-     * Helper to create a delay using Promises.
+     * Helper to create a delay using a callback.
      * @param {number} ms - Milliseconds to wait.
-     * @returns {Promise<void>}
+     * @param {function} callback - The function to run after the delay.
      */
-    sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+    sleep(ms, callback) {
+        setTimeout(callback, ms);
     }
 
     /**
      * Initializes the game loop: creation, delay, scrambling, and testing.
      * @param {number} n - The number of buttons to generate.
      */
-    async initGame(n) 
-    {
+    async initGame(n) {
         if (this.isScrambling) return;
         this.reset();
 
         // 1. Creation Phase
-        for (let i = 1; i <= n; i++) 
-            {
+        for (let i = 1; i <= n; i++) {
+            // Generate a random color in base 16, padded to 6 digits
             const color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
             const btn = new MemoryButton(i, color, this.container);
             btn.element.style.position = "relative";
@@ -209,18 +200,10 @@ class GameController
         // Wait before scrambling
         await this.sleep(n * 1000);
 
-
         // 2. Scrambling Phase
         this.isScrambling = true;
-        for (let i = 0; i < n; i++) 
-            {
-            const currentW = this.container.clientWidth;
-            const currentH = this.container.clientHeight;
-
-            this.buttons.forEach(btn => {
-                btn.element.style.position = "absolute";
-                btn.updatePosition(currentW, currentH);
-            });
+        for (let i = 0; i < n; i++) {
+            this.scramble()
 
             await this.sleep(2000);
         }
@@ -236,15 +219,13 @@ class GameController
 /**
  * Manages the User Interface components like input fields and start buttons.
  */
-class UIManager 
-{   
+class UIManager {
 
     /**
      * @param {GameController} gameEngine 
      * The game controller instance to link to UI actions.
      */
-    constructor(gameEngine) 
-    {
+    constructor(gameEngine) {
         this.gameEngine = gameEngine;
         this.setupUI();
     }
@@ -252,8 +233,7 @@ class UIManager
     /**
      * Dynamically creates and injects UI elements into the page.
      */
-    setupUI() 
-    {
+    setupUI() {
         const root = document.getElementById('ui-container');
         const label = document.createElement('label');
 
