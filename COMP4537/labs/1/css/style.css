@@ -42,17 +42,20 @@ h3 {
     transition: all 0.3s ease; 
 }
 
-.navigation a[href="writer.html"] {
+.btn-writer {
     background-color: #2ecc71;
 }
 
-.navigation a[href="reader.html"] {
+.btn-reader {
     background-color: #3498db;
 }
 
-.btn:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); 
+.btn-writer:hover {
+    background-color: #27ae60;
+}
+
+.btn-reader:hover {
+    background-color: #2980b9;
 }
 
 .navigation a[href="writer.html"]:hover {
