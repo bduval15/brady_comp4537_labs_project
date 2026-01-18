@@ -1,3 +1,13 @@
+/**
+ * LAB 1: JSON, Object Constructor, localStorage
+ * Author: Braeden Duval
+ * * AI DISCLOSURE:
+ * I used Google Gemini for structural guidance and debugging to encapsulate the UI elements
+ * and their logic. It helped me understand the localStorage integration and DOM manipulation.
+ * 
+ * @link https://gemini.google.com/app
+ */
+
 class Note {
     static allNotes = [];
 
