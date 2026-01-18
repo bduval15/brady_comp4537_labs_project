@@ -58,14 +58,6 @@ h3 {
     background-color: #2980b9;
 }
 
-.navigation a[href="writer.html"]:hover {
-    background-color: #27ae60;
-}
-
-.navigation a[href="reader.html"]:hover {
-    background-color: #2980b9;
-}
-
 #status-bar {
     text-align: right;
     margin-bottom: 20px;
