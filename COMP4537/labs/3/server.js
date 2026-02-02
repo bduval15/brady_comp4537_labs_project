@@ -6,11 +6,10 @@ const path = `./data/file.txt`;
 const Greeting = require('./lang/messages/en/en');
 
 /**
- * We used Google Gemini to help debug when we used fs with try 
- * catch blocks and res. 
- * 
- * @link https://gemini.google.com/app
- */
+ * Refactored file writing logic to handle asynchronous errors.
+ * Solved issue where try/catch failed to catch fs.appendFile errors.
+ * @link https://gemini.google.com/app*
+*/
 
 class Server {
     constructor(port) {
