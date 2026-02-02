@@ -5,6 +5,13 @@ const fs = require('fs');
 const path = `./data/file.txt`;
 const Greeting = require('./lang/messages/en/en');
 
+/**
+ * We used Google Gemini to help debug when we used fs with try 
+ * catch blocks and res. 
+ * 
+ * @link https://gemini.google.com/app
+ */
+
 class Server {
     constructor(port) {
         this.port = port;
@@ -48,7 +55,7 @@ class Server {
         const format = `<div style="color: blue;">${message}</div>`;
 
         res.writeHead(200, { 'Content-Type': 'text/html' });
-        
+
         res.end(format);
     }
 
