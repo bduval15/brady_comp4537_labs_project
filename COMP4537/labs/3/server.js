@@ -13,25 +13,33 @@ const Greeting = require('./lang/messages/en/en');
 
 class Server {
     constructor(port) {
+
         this.port = port;
+
+        // creates server instance, arrow function passes every request to handleRequest function
         this.server = http.createServer((req, res) => this.handleRequest(req, res));
     }
 
     start() {
+
         this.server.listen(this.port, () => {
             console.log(`Server is listening on port ${this.port}`);
         });
     }
 
+    // traffic controller 
     handleRequest(req, res) {
+
         const parseUrl = url.parse(req.url, true);
 
         if (parseUrl.pathname === '/COMP4537/labs/3/getDate/') {
+
             const name = parseUrl.query.name || 'Guest';
             this.showDate(name, res);
         }
 
         else if (parseUrl.pathname === '/COMP4537/labs/3/writeFile/') {
+
             const text = parseUrl.query.text;
             this.writeFile(text, res);
         }
@@ -47,6 +55,7 @@ class Server {
     }
 
     showDate(name, res) {
+
         const currentDate = dt.getDate();
 
         let message = Greeting.message.replace('%1', name).replace('%2', currentDate);
@@ -54,7 +63,6 @@ class Server {
         const format = `<div style="color: blue;">${message}</div>`;
 
         res.writeHead(200, { 'Content-Type': 'text/html' });
-
         res.end(format);
     }
 
@@ -79,6 +87,7 @@ class Server {
     }
 
     readFile(res) {
+
         fs.readFile(path, 'utf8', (err, data) => {
 
             if (err) {
@@ -95,6 +104,7 @@ class Server {
     }
 }
 
+// initialization 
 const PORT = process.env.PORT || 8000;
 const SERVER = new Server(PORT);
 SERVER.start();
