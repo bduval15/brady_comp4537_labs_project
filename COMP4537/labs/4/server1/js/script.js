@@ -1,3 +1,12 @@
+/**
+ * Group b5 Ai disclosure:
+ * We used Google Gemini to format the table 
+ * from the SQL query results.
+ * 
+ * @link https://gemini.google.com/app
+ * 
+ */
+
 class UI {
     constructor(host_url) {
         this.host_url = host_url;
@@ -86,5 +95,5 @@ class UI {
     }
 }
 
-const host_url = Process.env.HOST_URL;
+const host_url = "https://b5-server2.onrender.com/api/v1/sql";
 const app = new UI(host_url);

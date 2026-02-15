@@ -1,7 +1,15 @@
+/**
+ * Group b5 Ai disclosure:
+ * We used Google Gemini to troubleshoot CORS issues 
+ * and proper .env setup between admin / guests.
+ * 
+ * @link https://gemini.google.com/app
+ * 
+ */
+
 const http = require('http');
 const url = require('url');
 const mysql = require('mysql2/promise');
-const messages = require('../server1/lang/messages/en/en.js');
 require('dotenv').config();
 
 const DB_CONFIG = {
@@ -119,6 +127,6 @@ class ServerAPI {
         }
     }
 }
-
-const app = new ServerAPI(3000);
+const port = process.env.PORT || 3000;
+const app = new ServerAPI(port);
 app.start();
